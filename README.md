@@ -1,41 +1,22 @@
+Сущности приложения:
+
+-   пользователь: БД (список пользователей), BFF (сессия текущего), стор (отображение в браузере)
+-   роль пользователя: БД (список ролей), BFF (сессия пользователя), стор (использование на клиенте)
+-   товар: БД (список товаров), стор (отображение в браузере)
+
 Определить таблицы БД и их схемы:
 
-Пользователи (users): id / login / password / role_id
+-   пользователи (users): id / login / password / registed_at / role_id
+-   роли (roles): id / name
+-   товары (products): id / title / image_url / category / price / quantity
 
-Роли (roles): id / name
+Определить схему состояния на BFF:
 
-Товары (products): id / title / image_url / category / price / quantity
+-   сессия текущего пользователя: login / password / role
 
-Комментарии (comments): id / author_id / post_id / content
+Определить схему для Redux Store:
 
-Определить схему состояния на BFF.
-сессия текущего пользователя: login / password / role
-
-Определить схему для Redux Store.
-
-user:
-id
-login
-roleId
-posts: массив post:
-id
-title
-imageUrl
-publishedAt
-commentsCount
-post:
-id
-title
-imageUrl
-content
-publishedAt
-comments: массив comment:
-id
-author
-content
-publishedAt
-users: массив user:
-id
-login
-registeredAt
-role
+-   users: массив user: id / login / registeredAt / role
+-   user: id / login / roleId
+-   products: массив product: id / title / imageUrl / category / price / quantity
+-   product: id / title / imageUrl / category / price
