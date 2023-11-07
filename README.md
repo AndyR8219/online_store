@@ -8,7 +8,7 @@
 
 -   пользователи (users): id / login / password / registed_at / role_id
 -   роли (roles): id / name
--   товары (products): id / title / image_url / category / price / quantity
+-   товары (products): id / title / price / quantity / description / category / image_url /
 
 Определить схему состояния на BFF:
 
