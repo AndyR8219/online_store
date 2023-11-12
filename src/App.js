@@ -1,6 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
 import styled from 'styled-components';
 import { Header } from './components';
+import { Main, Product } from './pages';
 
 const AppColumn = styled.div`
 	display: flex;
@@ -23,15 +24,12 @@ export const App = () => {
 			<Header />
 			<Page>
 				<Routes>
-					<Route path="/" element={<div>Главная страница</div>} />
+					<Route path="/" element={<Main />} />
 					<Route path="/login" element={<div>Авторизация</div>} />
 					<Route path="/register" element={<div>Регистрация</div>} />
 					<Route path="/users" element={<div>Пользователи</div>} />
 					<Route path="/product/" element={<div>Продукт </div>} />
-					<Route
-						path="/product/:id"
-						element={<div>Страница с продуктом</div>}
-					/>
+					<Route path="/product/:id" element={<Product />} />
 					<Route
 						path="/post/:id/edit"
 						element={<div>Страница редактирования продукта</div>}
