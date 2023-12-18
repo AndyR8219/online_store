@@ -3,7 +3,11 @@
 	"version": "0.1.0",
 	"private": true,
 	"dependencies": {
+		"@emotion/react": "^11.11.1",
+		"@emotion/styled": "^11.11.0",
 		"@hookform/resolvers": "^3.3.1",
+		"@mui/icons-material": "^5.15.0",
+		"@mui/material": "^5.15.0",
 		"@reduxjs/toolkit": "^1.9.7",
 		"eslint-config-prettier": "^8.6.0",
 		"eslint-plugin-prettier": "^4.2.1",
@@ -20,8 +24,6 @@
 	},
 	"scripts": {
 		"start": "react-scripts start",
-		"dev": "concurrently \"npm run server\" \"npm run start\"",
-		"server": "json-server -w src/db.json -p 3005 -d 1000",
 		"build": "react-scripts build",
 		"test": "react-scripts test",
 		"eject": "react-scripts eject"
@@ -47,9 +49,5 @@
 			"last 1 firefox version",
 			"last 1 safari version"
 		]
-	},
-	"devDependencies": {
-		"concurrently": "^8.2.2",
-		"json-server": "^0.17.4"
 	}
 }
