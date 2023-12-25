@@ -8,6 +8,8 @@ export const Main = () => {
 	const { data, isLoading } = useGetProductsQuery();
 	const [search, setSearch] = useState('');
 
+	if (isLoading) return <div>Загрузка</div>;
+
 	const handleChange = ({ target }) => {
 		setSearch(target.value);
 	};
@@ -20,7 +22,9 @@ export const Main = () => {
 					{isLoading
 						? 'Загрузка'
 						: data.data.products.map((product) => (
-								<ProductItem key={product.id} product={product} />
+								<Grid item key={product.id} xs={12} sm={6} md={4} lg={3}>
+									<ProductItem product={product} />
+								</Grid>
 						  ))}
 				</Grid>
 			</Container>
