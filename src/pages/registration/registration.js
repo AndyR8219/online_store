@@ -1,116 +1,143 @@
-// import {
-// 	Avatar,
-// 	Button,
-// 	CssBaseline,
-// 	TextField,
-// 	FormControlLabel,
-// 	Checkbox,
-// 	Link,
-// 	Grid,
-// 	Box,
-// 	Typography,
-// 	Container,
-// } from '@mui/material';
-// import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-// import { createTheme, ThemeProvider } from '@mui/material/styles';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import { yupResolver } from '@hookform/resolvers/yup';
+import {
+	Avatar,
+	Button,
+	CssBaseline,
+	TextField,
+	Box,
+	Typography,
+	Container,
+	Grid,
+	Alert,
+} from '@mui/material';
+import { useForm } from 'react-hook-form';
+import { useState } from 'react';
+import { useAddUserMutation } from '../../redux';
+import { registerFormSchema } from '../../validations';
+import { useDispatch } from 'react-redux';
+import { setCredentials } from '../../features/auth-slice';
+import { useNavigate } from 'react-router-dom';
 
-// function Copyright(props) {
-// 	return (
-// 		<Typography variant="body2" color="text.secondary" align="center" {...props}>
-// 			{'Copyright © '}
-// 			<Link color="inherit" href="https://mui.com/">
-// 				Your Website
-// 			</Link>{' '}
-// 			{new Date().getFullYear()}
-// 			{'.'}
-// 		</Typography>
-// 	);
-// }
+export const Registration = () => {
+	const [serverError, setServerError] = useState(null);
+	const [registerUser, { isLoading }] = useAddUserMutation();
+	const dispatch = useDispatch();
+	const navigate = useNavigate();
 
-// const defaultTheme = createTheme();
+	const {
+		register,
+		handleSubmit,
+		formState: { errors },
+	} = useForm({
+		defaultValues: {
+			login: '',
+			password: '',
+		},
+		resolver: yupResolver(registerFormSchema),
+	});
 
-// export default function Registration() {
-// 	const handleSubmit = (event) => {
-// 		event.preventDefault();
-// 		const data = new FormData(event.currentTarget);
-// 		console.log({
-// 			email: data.get('email'),
-// 			password: data.get('password'),
-// 		});
-// 	};
+	const onSubmit = async ({ login, password }) => {
+		try {
+			const userData = await registerUser({ login, password });
+			dispatch(setCredentials({ ...userData, login }));
+			navigate('/');
+		} catch (error) {
+			setServerError(error.message || 'Произошла ошибка при регистрации');
+		}
+	};
 
-// 	return (
-// 		<ThemeProvider theme={defaultTheme}>
-// 			<Container component="main" maxWidth="xs">
-// 				<CssBaseline />
-// 				<Box
-// 					sx={{
-// 						marginTop: 8,
-// 						display: 'flex',
-// 						flexDirection: 'column',
-// 						alignItems: 'center',
-// 					}}
-// 				>
-// 					<Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-// 						<LockOutlinedIcon />
-// 					</Avatar>
-// 					<Typography component="h1" variant="h5">
-// 						Sign in
-// 					</Typography>
-// 					<Box
-// 						component="form"
-// 						onSubmit={handleSubmit}
-// 						noValidate
-// 						sx={{ mt: 1 }}
-// 					>
-// 						<TextField
-// 							margin="normal"
-// 							required
-// 							fullWidth
-// 							id="email"
-// 							label="Email Address"
-// 							name="email"
-// 							autoComplete="email"
-// 							autoFocus
-// 						/>
-// 						<TextField
-// 							margin="normal"
-// 							required
-// 							fullWidth
-// 							name="password"
-// 							label="Password"
-// 							type="password"
-// 							id="password"
-// 							autoComplete="current-password"
-// 						/>
-// 						<FormControlLabel
-// 							control={<Checkbox value="remember" color="primary" />}
-// 							label="Remember me"
-// 						/>
-// 						<Button
-// 							type="submit"
-// 							fullWidth
-// 							variant="contained"
-// 							sx={{ mt: 3, mb: 2 }}
-// 						>
-// 							Sign In
-// 						</Button>
-// 						<Grid container>
-// 							<Grid item xs>
-// 								<Link href="#" variant="body2">
-// 									Forgot password?
-// 								</Link>
-// 							</Grid>
-// 							<Grid item>
-// 								<Link href="#" variant="body2">
-// 									{"Don't have an account? Sign Up"}
-// 								</Link>
-// 							</Grid>
-// 						</Grid>
-// 					</Box>
-// 				</Box>
-// 				<Copyright sx={{ mt: 8, mb: 4 }} />
-// 			</Container>
-// 		</ThemeProvider>
-// 	);
-// }
+	return (
+		<>
+			<Container component="main" maxWidth="xs">
+				<CssBaseline />
+				<Box
+					sx={{
+						marginTop: 8,
+						display: 'flex',
+						flexDirection: 'column',
+						alignItems: 'center',
+					}}
+				>
+					<Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+						<LockOutlinedIcon />
+					</Avatar>
+					<Typography component="h1" variant="h5">
+						Регистрация
+					</Typography>
+					<Box
+						component="form"
+						noValidate
+						onSubmit={handleSubmit(onSubmit)}
+						sx={{ mt: 3 }}
+					>
+						<Grid container spacing={2}>
+							<Grid item xs={12}>
+								<TextField
+									margin="normal"
+									required
+									fullWidth
+									id="login"
+									label="Введите логин"
+									type="login"
+									name="login"
+									autoComplete="login"
+									autoFocus
+									{...register('login', {
+										onChange: () => setServerError(null),
+									})}
+									error={!!errors.login}
+									helperText={errors.login?.message}
+								/>
+							</Grid>
+							<Grid item xs={12}>
+								<TextField
+									margin="normal"
+									required
+									fullWidth
+									name="password"
+									label="Введите пароль"
+									type="password"
+									id="password"
+									autoComplete="current-password"
+									{...register('password', {
+										onChange: () => setServerError(null),
+									})}
+									error={!!errors.password}
+									helperText={errors.password?.message}
+								/>
+							</Grid>
+							<Grid item xs={12}>
+								<TextField
+									margin="normal"
+									required
+									fullWidth
+									name="confirmPassword"
+									label="Повтор пароля"
+									type="password"
+									id="confirmPassword"
+									autoComplete="current-password"
+									{...register('confirmPassword', {
+										onChange: () => setServerError(null),
+									})}
+									error={!!errors.confirmPassword}
+									helperText={errors.confirmPassword?.message}
+								/>
+							</Grid>
+						</Grid>
+						<Button
+							type="submit"
+							fullWidth
+							variant="contained"
+							sx={{ mt: 3, mb: 2 }}
+							disabled={isLoading}
+						>
+							Зарегистрироваться
+						</Button>
+					</Box>
+					{serverError && <Alert severity="error">{serverError}</Alert>}
+				</Box>
+			</Container>
+		</>
+	);
+};

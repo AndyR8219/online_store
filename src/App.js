@@ -1,7 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
 import styled from 'styled-components';
 import { Header } from './components';
-import { Main, Login } from './pages';
+import { Main, Login, Registration } from './pages';
 
 const AppColumn = styled.div`
 	width: 1200px;
@@ -17,7 +17,7 @@ export const App = () => {
 			<Routes>
 				<Route path="/" element={<Main />} />
 				<Route path="/login" element={<Login />} />
-				<Route path="/register" element={<div>Registration</div>} />
+				<Route path="/register" element={<Registration />} />
 				<Route path="/users" element={<div>Пользователи</div>} />
 				<Route path="/product/" element={<div>Продукт </div>} />
 				<Route path="/product/:id" element={<div>Продукт </div>} />
