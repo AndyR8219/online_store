@@ -1,17 +1,9 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { selectCurrentToken } from '../features/auth-slice';
 
 export const apiSlice = createApi({
 	reducerPath: 'api',
 	baseQuery: fetchBaseQuery({
 		baseUrl: '/',
-		prepareHeaders: (headers, { getState }) => {
-			const token = selectCurrentToken(getState());
-			if (token) {
-				headers.set('Authorization', `Bearer ${token}`);
-			}
-			return headers;
-		},
 	}),
 	endpoints: (build) => ({
 		checkToken: build.query({

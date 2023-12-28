@@ -44,8 +44,10 @@ export const Login = () => {
 
 	const onSubmit = async ({ login, password }) => {
 		try {
-			const userData = await loginUser({ login, password });
-			dispatch(setCredentials({ ...userData, login }));
+			const {
+				data: { user },
+			} = await loginUser({ login, password });
+			dispatch(setCredentials({ user }));
 			navigate('/');
 		} catch (error) {
 			setServerError(error.message || 'Произошла ошибка при авторизации');

@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useCheckTokenQuery } from '../../redux/';
-import { clearUser, setUser } from '../../features/auth-slice';
+import { logOut, setCredentials } from '../../features/auth-slice';
 
 const AuthCheck = () => {
 	const dispatch = useDispatch();
@@ -11,9 +11,9 @@ const AuthCheck = () => {
 		const checkTokenAndSetUser = async () => {
 			try {
 				if (userData) {
-					dispatch(setUser(userData));
+					dispatch(setCredentials(userData));
 				} else {
-					dispatch(clearUser());
+					dispatch(logOut());
 				}
 			} catch (error) {
 				console.error('Error checking token:', error);
