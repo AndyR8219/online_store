@@ -1,10 +1,10 @@
 import { Card, CardContent, CardMedia, Typography, Button } from '@mui/material';
-import { useGetProductsQuery } from '../../redux';
+import { useGetProductByIdQuery } from '../../redux';
 import { useParams } from 'react-router-dom';
 
 export const Product = () => {
 	const params = useParams();
-	const { data, isLoading, isError } = useGetProductsQuery(params.id);
+	const { data, isLoading, isError } = useGetProductByIdQuery(params.id);
 
 	if (isLoading) {
 		return <div>Loading...</div>;

@@ -33,7 +33,17 @@ export const apiSlice = createApi({
 			}),
 		}),
 		getProducts: build.query({
-			query: (id = '') => `products/${id && `${id}`}`,
+			query: ({ search = '', categories, page }) => {
+				const queryParams = new URLSearchParams();
+				if (search) queryParams.append('search', search);
+				if (categories) queryParams.append('categories', categories);
+				if (page) queryParams.append('page', page);
+				const queryString = queryParams.toString();
+				return `products${queryString ? `?${queryString}` : ''}`;
+			},
+		}),
+		getProductById: build.query({
+			query: (productId = '') => `products/${productId && `${productId}`}`,
 		}),
 	}),
 });
@@ -44,4 +54,5 @@ export const {
 	useCheckTokenQuery,
 	useLogoutMutation,
 	useAddUserMutation,
+	useGetProductByIdQuery,
 } = apiSlice;
