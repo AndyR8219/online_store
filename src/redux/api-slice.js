@@ -2,6 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 export const apiSlice = createApi({
 	reducerPath: 'api',
+	tagTypes: ['Users'],
 	baseQuery: fetchBaseQuery({
 		baseUrl: '/',
 	}),
@@ -11,23 +12,33 @@ export const apiSlice = createApi({
 		}),
 		loginUser: build.mutation({
 			query: (credentials) => ({
-				url: 'login',
+				url: 'auth/login',
 				method: 'POST',
 				body: credentials,
 			}),
 		}),
 		logout: build.mutation({
 			query: () => ({
-				url: 'logout',
+				url: 'auth/logout',
 				method: 'POST',
 			}),
 		}),
 		getUsers: build.query({
-			query: (loginId = '') => `users/${loginId && `${loginId}`}`,
+			query: (loginId = '') => `api/users/${loginId && `${loginId}`}`,
+			providesTags: (result) => {
+				if (Array.isArray(result)) {
+					return [
+						...result.map(({ id }) => ({ type: 'Users', id })),
+						{ type: 'Users', id: 'LIST' },
+					];
+				} else {
+					return [{ type: 'Users', id: 'LIST' }];
+				}
+			},
 		}),
 		addUser: build.mutation({
 			query: (credentials) => ({
-				url: 'register',
+				url: 'auth/register',
 				method: 'POST',
 				body: credentials,
 			}),
@@ -39,11 +50,29 @@ export const apiSlice = createApi({
 				if (categories) queryParams.append('categories', categories);
 				if (page) queryParams.append('page', page);
 				const queryString = queryParams.toString();
-				return `products${queryString ? `?${queryString}` : ''}`;
+				return `api/products${queryString ? `?${queryString}` : ''}`;
 			},
 		}),
 		getProductById: build.query({
-			query: (productId = '') => `products/${productId && `${productId}`}`,
+			query: (productId = '') => `api/products/${productId && `${productId}`}`,
+		}),
+		getUserRole: build.query({
+			query: () => 'api/users/roles',
+		}),
+		deleteUser: build.mutation({
+			query: (userId) => ({
+				url: `api/users/${userId}`,
+				method: 'DELETE',
+			}),
+			invalidatesTags: [{ type: 'Users', id: 'LIST' }],
+		}),
+		updateUserRole: build.mutation({
+			query: ({ userId, roleId }) => ({
+				url: `api/users/${userId}`,
+				method: 'PATCH',
+				body: { roleId },
+			}),
+			invalidatesTags: [{ type: 'Users', id: 'LIST' }],
 		}),
 	}),
 });
@@ -55,4 +84,8 @@ export const {
 	useLogoutMutation,
 	useAddUserMutation,
 	useGetProductByIdQuery,
+	useGetUsersQuery,
+	useGetUserRoleQuery,
+	useDeleteUserMutation,
+	useUpdateUserRoleMutation,
 } = apiSlice;

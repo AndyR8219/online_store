@@ -1,22 +1,25 @@
-import { AppBar, Box, IconButton, Toolbar, Typography } from '@mui/material';
-import { Login, Logout, ShoppingBasket, Home } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-import { useLogoutMutation } from '../../redux';
-import { selectCurrentUser } from '../../features/auth-slice';
+import { selectCurrentUser } from '../../slice/auth-slice';
 import { useSelector } from 'react-redux';
+import { BasicMenu } from '../menu/basic-menu';
+import { useState } from 'react';
+import { Login, ShoppingBasket, Home, AccountCircle } from '@mui/icons-material';
+import AppBar from '@mui/material/AppBar';
+import Box from '@mui/material/Box';
+import IconButton from '@mui/material/IconButton';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
 
 export const Header = () => {
 	const navigate = useNavigate();
-	const [logout, { isLoading }] = useLogoutMutation();
-	const user = useSelector(selectCurrentUser);
 
-	const onLogout = async () => {
-		try {
-			await logout();
-			window.location.reload();
-		} catch (error) {
-			console.error('Ошибка при logout:', error);
-		}
+	const user = useSelector(selectCurrentUser);
+	const [anchorEl, setAnchorEl] = useState(null);
+
+	const open = Boolean(anchorEl);
+
+	const handleClick = (event) => {
+		setAnchorEl(event.currentTarget);
 	};
 
 	return (
@@ -31,15 +34,33 @@ export const Header = () => {
 				<Box sx={{ display: { xs: 'none', md: 'flex' } }}>
 					{user ? (
 						<>
+							<Box
+								display="flex"
+								justifyContent="center"
+								alignItems="center"
+							>
+								<Typography variant="body1" sx={{ fontSize: 20 }}>
+									{user.login}
+								</Typography>
+							</Box>
+							<BasicMenu
+								setAnchorEl={setAnchorEl}
+								anchorEl={anchorEl}
+								open={open}
+							>
+								<IconButton
+									color="inherit"
+									id="basic-button"
+									aria-controls={open ? 'basic-menu' : undefined}
+									aria-haspopup="true"
+									aria-expanded={open ? 'true' : undefined}
+									onClick={handleClick}
+								>
+									<AccountCircle />
+								</IconButton>
+							</BasicMenu>
 							<IconButton color="inherit">
 								<ShoppingBasket />
-							</IconButton>
-							<IconButton
-								color="inherit"
-								onClick={() => onLogout()}
-								disabled={isLoading}
-							>
-								<Logout />
 							</IconButton>
 						</>
 					) : (

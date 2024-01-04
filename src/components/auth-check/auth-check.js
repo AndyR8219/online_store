@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useCheckTokenQuery } from '../../redux/';
-import { logOut, setCredentials } from '../../features/auth-slice';
+import { logOut, setCredentials } from '../../slice/auth-slice';
 
 const AuthCheck = () => {
 	const dispatch = useDispatch();

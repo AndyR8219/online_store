@@ -1,23 +1,21 @@
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { yupResolver } from '@hookform/resolvers/yup';
-import {
-	Avatar,
-	Button,
-	CssBaseline,
-	TextField,
-	Box,
-	Typography,
-	Container,
-	Grid,
-	Alert,
-} from '@mui/material';
 import { useForm } from 'react-hook-form';
 import { useState } from 'react';
 import { useAddUserMutation } from '../../redux';
 import { registerFormSchema } from '../../validations';
 import { useDispatch } from 'react-redux';
-import { setCredentials } from '../../features/auth-slice';
+import { setCredentials } from '../../slice/auth-slice';
 import { useNavigate } from 'react-router-dom';
+import Alert from '@mui/material/Alert';
+import Avatar from '@mui/material/Avatar';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Container from '@mui/material/Container';
+import CssBaseline from '@mui/material/CssBaseline';
+import Grid from '@mui/material/Grid';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
 
 export const Registration = () => {
 	const [serverError, setServerError] = useState(null);
@@ -39,8 +37,10 @@ export const Registration = () => {
 
 	const onSubmit = async ({ login, password }) => {
 		try {
-			const userData = await registerUser({ login, password });
-			dispatch(setCredentials({ ...userData, login }));
+			const {
+				data: { user },
+			} = await registerUser({ login, password });
+			dispatch(setCredentials({ user }));
 			navigate('/');
 		} catch (error) {
 			setServerError(error.message || 'Произошла ошибка при регистрации');

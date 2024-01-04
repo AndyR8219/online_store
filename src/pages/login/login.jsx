@@ -1,23 +1,21 @@
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import {
-	Avatar,
-	Box,
-	Button,
-	Container,
-	CssBaseline,
-	TextField,
-	Typography,
-	Link,
-	Alert,
-} from '@mui/material';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { useState } from 'react';
 import { useLoginUserMutation } from '../../redux';
 import { useNavigate } from 'react-router-dom';
-import { setCredentials } from '../../features/auth-slice';
+import { setCredentials } from '../../slice/auth-slice';
 import { useDispatch } from 'react-redux';
 import { authFormSchema } from '../../validations/';
+import Avatar from '@mui/material/Avatar';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Container from '@mui/material/Container';
+import CssBaseline from '@mui/material/CssBaseline';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
+import Link from '@mui/material/Link';
+import Alert from '@mui/material/Alert';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 
 export const Login = () => {
 	const [serverError, setServerError] = useState(null);
