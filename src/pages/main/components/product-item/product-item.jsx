@@ -35,7 +35,7 @@ export const ProductItem = (props) => {
 			</CardActionArea>
 			<CardActions>
 				<Button size="small" color="primary">
-					Купить
+					В корзину
 				</Button>
 			</CardActions>
 		</Card>

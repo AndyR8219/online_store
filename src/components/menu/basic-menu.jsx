@@ -55,7 +55,7 @@ export const BasicMenu = ({ children, setAnchorEl, anchorEl, open }) => {
 					<IconButton color="inherit">
 						<Person />
 					</IconButton>
-					Profile
+					Профиль
 				</MenuItem>
 				{roleAdmin && (
 					<Box>
@@ -63,13 +63,13 @@ export const BasicMenu = ({ children, setAnchorEl, anchorEl, open }) => {
 							<IconButton color="inherit">
 								<Group />
 							</IconButton>
-							Users
+							Пользователи
 						</MenuItem>
 						<MenuItem onClick={pageToProductsList}>
 							<IconButton color="inherit">
 								<InventorySharp />
 							</IconButton>
-							Products
+							Товары
 						</MenuItem>
 					</Box>
 				)}
@@ -77,7 +77,7 @@ export const BasicMenu = ({ children, setAnchorEl, anchorEl, open }) => {
 					<IconButton color="inherit">
 						<Logout />
 					</IconButton>
-					Logout
+					Выйти
 				</MenuItem>
 			</Menu>
 		</div>

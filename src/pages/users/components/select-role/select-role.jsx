@@ -15,7 +15,6 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 export const SelectRole = ({ roles, roleId, userId }) => {
 	const [updateUserRole, { isLoading }] = useUpdateUserRoleMutation();
 	const user = useSelector(selectCurrentUser);
-
 	const [snackbarOpen, setSnackbarOpen] = useState(false);
 
 	const handleRoleChange = async ({ target }) => {

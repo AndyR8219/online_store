@@ -1,12 +1,10 @@
 import { useDispatch } from 'react-redux';
-import {
-	List,
-	ListItem,
-	ListItemButton,
-	ListItemIcon,
-	Checkbox,
-	ListItemText,
-} from '@mui/material';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import Checkbox from '@mui/material/Checkbox';
+import ListItemText from '@mui/material/ListItemText';
 
 export const Category = ({ categories, checked, setChecked }) => {
 	const dispatch = useDispatch();

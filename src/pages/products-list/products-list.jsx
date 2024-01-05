@@ -1,19 +1,18 @@
-import { useGetProductsQuery } from '../../redux';
-import { Search, Category } from '../../components';
-import { ProductItem } from './components';
+import { Loading, Search, Category } from '../../components';
 import { useState } from 'react';
-import { setChecked, selectCheckedCategories } from '../../slice/categories-slise';
 import { useSelector } from 'react-redux';
-import { Loading } from '../../components';
-import Alert from '@mui/material/Alert';
-import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
+import { setChecked, selectCheckedCategories } from '../../slice/categories-slise';
+import { useGetProductsQuery } from '../../redux';
+import { ProductRow } from './components';
+import { LIMIT_PRODUCT_LIST } from '../../constants';
 import Container from '@mui/material/Container';
+import Card from '@mui/material/Card';
 import Grid from '@mui/material/Grid';
-import Pagination from '@mui/material/Pagination';
+import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
+import Pagination from '@mui/material/Pagination';
 
-export const Main = () => {
+export const ProductList = () => {
 	const [search, setSearch] = useState('');
 	const checked = useSelector(selectCheckedCategories);
 	const [page, setPage] = useState(1);
@@ -21,17 +20,14 @@ export const Main = () => {
 	const categoriesParam =
 		checked.length > 0 ? encodeURIComponent(JSON.stringify(checked)) : '';
 
-	const { data, isLoading, isError } = useGetProductsQuery({
+	const { data, isLoading } = useGetProductsQuery({
 		search: search,
 		categories: categoriesParam,
 		page: page,
+		limit: LIMIT_PRODUCT_LIST,
 	});
 
 	if (isLoading) return <Loading />;
-
-	if (isError) {
-		return <Alert severity="error">Произошла ошибка при загрузке данных!</Alert>;
-	}
 
 	const lastPage = data?.lastPage || 1;
 	const categories = data?.categories || [];
@@ -59,24 +55,7 @@ export const Main = () => {
 					</Card>
 				</Grid>
 				<Grid item xs={10}>
-					<Box>
-						<Grid container spacing={3}>
-							{isLoading
-								? 'Загрузка'
-								: products.map((product) => (
-										<Grid
-											item
-											key={product.id}
-											xs={12}
-											sm={6}
-											md={5}
-											lg={4}
-										>
-											<ProductItem product={product} />
-										</Grid>
-								  ))}
-						</Grid>
-					</Box>
+					<ProductRow products={products} />
 				</Grid>
 			</Grid>
 			<Box sx={{ padding: '3rem', display: 'flex', justifyContent: 'center' }}>

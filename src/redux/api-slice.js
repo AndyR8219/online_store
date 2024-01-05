@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 export const apiSlice = createApi({
 	reducerPath: 'api',
-	tagTypes: ['Users'],
+	tagTypes: ['Users', 'Products'],
 	baseQuery: fetchBaseQuery({
 		baseUrl: '/',
 	}),
@@ -43,19 +43,6 @@ export const apiSlice = createApi({
 				body: credentials,
 			}),
 		}),
-		getProducts: build.query({
-			query: ({ search = '', categories, page }) => {
-				const queryParams = new URLSearchParams();
-				if (search) queryParams.append('search', search);
-				if (categories) queryParams.append('categories', categories);
-				if (page) queryParams.append('page', page);
-				const queryString = queryParams.toString();
-				return `api/products${queryString ? `?${queryString}` : ''}`;
-			},
-		}),
-		getProductById: build.query({
-			query: (productId = '') => `api/products/${productId && `${productId}`}`,
-		}),
 		getUserRole: build.query({
 			query: () => 'api/users/roles',
 		}),
@@ -74,18 +61,40 @@ export const apiSlice = createApi({
 			}),
 			invalidatesTags: [{ type: 'Users', id: 'LIST' }],
 		}),
+		getProducts: build.query({
+			query: ({ search = '', categories, page, limit }) => {
+				const queryParams = new URLSearchParams();
+				if (search) queryParams.append('search', search);
+				if (categories) queryParams.append('categories', categories);
+				if (page) queryParams.append('page', page);
+				if (limit) queryParams.append('limit', limit);
+				const queryString = queryParams.toString();
+				return `api/products${queryString ? `?${queryString}` : ''}`;
+			},
+		}),
+		getProductById: build.query({
+			query: (productId = '') => `api/products/${productId && `${productId}`}`,
+		}),
+		deleteProductById: build.mutation({
+			query: (productId) => ({
+				url: `api/products/${productId}`,
+				method: 'DELETE',
+			}),
+			invalidatesTags: [{ type: 'Products', id: 'LIST' }],
+		}),
 	}),
 });
 
 export const {
-	useGetProductsQuery,
 	useLoginUserMutation,
 	useCheckTokenQuery,
 	useLogoutMutation,
 	useAddUserMutation,
-	useGetProductByIdQuery,
 	useGetUsersQuery,
 	useGetUserRoleQuery,
-	useDeleteUserMutation,
 	useUpdateUserRoleMutation,
+	useDeleteUserMutation,
+	useGetProductsQuery,
+	useGetProductByIdQuery,
+	useDeleteProductByIdMutation,
 } = apiSlice;
