@@ -71,6 +71,16 @@ export const apiSlice = createApi({
 				const queryString = queryParams.toString();
 				return `api/products${queryString ? `?${queryString}` : ''}`;
 			},
+			providesTags: (result) => {
+				if (Array.isArray(result)) {
+					return [
+						...result.map(({ id }) => ({ type: 'Products', id })),
+						{ type: 'Products', id: 'LIST' },
+					];
+				} else {
+					return [{ type: 'Products', id: 'LIST' }];
+				}
+			},
 		}),
 		getProductById: build.query({
 			query: (productId = '') => `api/products/${productId && `${productId}`}`,
@@ -79,6 +89,22 @@ export const apiSlice = createApi({
 			query: (productId) => ({
 				url: `api/products/${productId}`,
 				method: 'DELETE',
+			}),
+			invalidatesTags: [{ type: 'Products', id: 'LIST' }],
+		}),
+		updateProduct: build.mutation({
+			query: ({ productId, product }) => ({
+				url: `api/products/${productId}`,
+				method: 'PATCH',
+				body: product,
+			}),
+			invalidatesTags: [{ type: 'Products', id: 'LIST' }],
+		}),
+		addProduct: build.mutation({
+			query: (product) => ({
+				url: 'api/products/',
+				method: 'POST',
+				body: product,
 			}),
 			invalidatesTags: [{ type: 'Products', id: 'LIST' }],
 		}),
@@ -97,4 +123,6 @@ export const {
 	useGetProductsQuery,
 	useGetProductByIdQuery,
 	useDeleteProductByIdMutation,
+	useUpdateProductMutation,
+	useAddProductMutation,
 } = apiSlice;

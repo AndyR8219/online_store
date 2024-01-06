@@ -37,6 +37,11 @@ export const BasicMenu = ({ children, setAnchorEl, anchorEl, open }) => {
 		navigate('/products_list');
 	};
 
+	const pageToProfile = () => {
+		handleClose();
+		navigate('/profile');
+	};
+
 	const roleAdmin = user?.roleId === ROLE.ADMIN;
 
 	return (
@@ -51,7 +56,7 @@ export const BasicMenu = ({ children, setAnchorEl, anchorEl, open }) => {
 					'aria-labelledby': 'basic-button',
 				}}
 			>
-				<MenuItem onClick={handleClose}>
+				<MenuItem onClick={pageToProfile}>
 					<IconButton color="inherit">
 						<Person />
 					</IconButton>

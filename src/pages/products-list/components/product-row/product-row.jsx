@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useDeleteProductByIdMutation } from '../../../../redux';
 import { useNavigate } from 'react-router-dom';
-import { ErrorAlert, SuccessAlert } from '../../../../components';
+import { Notification } from '../../../../components';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
@@ -17,7 +17,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 export const ProductRow = ({ products }) => {
 	const navigate = useNavigate();
-	const [snackbarOpen, setSnackbarOpen] = useState(false);
+	const [notification, setNotification] = useState(null);
 	const [deleteProductItem] = useDeleteProductByIdMutation();
 
 	const commonHeaderCellStyle = {
@@ -28,9 +28,16 @@ export const ProductRow = ({ products }) => {
 	const deleteProduct = async (productId) => {
 		try {
 			await deleteProductItem(productId);
-			setSnackbarOpen(true);
+			setNotification({
+				message: 'Удаление товара выполнено успешно',
+				type: 'success',
+			});
 		} catch (error) {
-			<ErrorAlert error={error} />;
+			console.error('Ошибка при удалении товара:', error);
+			setNotification({
+				message: 'Возникла ошибка при удалении товара',
+				type: 'error',
+			});
 		}
 	};
 
@@ -105,11 +112,13 @@ export const ProductRow = ({ products }) => {
 					</TableBody>
 				</Table>
 			</TableContainer>
-			<SuccessAlert
-				setSnackbarOpen={setSnackbarOpen}
-				snackbarOpen={snackbarOpen}
-				message={'Item deleted successfully'}
-			/>
+			{notification && (
+				<Notification
+					message={notification.message}
+					type={notification.type}
+					onClose={() => setNotification(null)}
+				/>
+			)}
 		</Box>
 	);
 };

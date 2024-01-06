@@ -16,7 +16,7 @@ const AuthCheck = () => {
 					dispatch(logOut());
 				}
 			} catch (error) {
-				console.error('Error checking token:', error);
+				console.error('Ошибка проверки токена:', error);
 			}
 		};
 

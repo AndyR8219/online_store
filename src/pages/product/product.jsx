@@ -1,17 +1,23 @@
-import { Card, CardContent, CardMedia, Typography, Button } from '@mui/material';
 import { useGetProductByIdQuery } from '../../redux';
 import { useParams } from 'react-router-dom';
+import { Loading } from '../../components';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import CardMedia from '@mui/material/CardMedia';
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
+import Alert from '@mui/material/Alert';
 
 export const Product = () => {
 	const params = useParams();
 	const { data, isLoading, isError } = useGetProductByIdQuery(params.id);
 
 	if (isLoading) {
-		return <div>Loading...</div>;
+		return <Loading />;
 	}
 
 	if (isError || !data || !data.data) {
-		return <div>Error loading product details</div>;
+		return <Alert severity="error">Ошибка загрузки товаров</Alert>;
 	}
 
 	const { title, price, description, imageUrl } = data.data;

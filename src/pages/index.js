@@ -4,3 +4,8 @@ export * from './registration/registration';
 export * from './product/product';
 export * from './users/users';
 export * from './products-list/products-list';
+export * from './edit-product/edit-product';
+export * from './new-product/new-product';
+export * from './error-page/error-page';
+export * from './user-profile/user-profile';
+export * from './cart-page/cart-page';
