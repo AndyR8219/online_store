@@ -14,6 +14,7 @@ export const Header = () => {
 	const navigate = useNavigate();
 
 	const user = useSelector(selectCurrentUser);
+
 	const [anchorEl, setAnchorEl] = useState(null);
 
 	const open = Boolean(anchorEl);
@@ -59,7 +60,10 @@ export const Header = () => {
 									<AccountCircle />
 								</IconButton>
 							</BasicMenu>
-							<IconButton color="inherit">
+							<IconButton
+								color="inherit"
+								onClick={() => navigate(`/cart/${user.cartId}`)}
+							>
 								<ShoppingBasket />
 							</IconButton>
 						</>

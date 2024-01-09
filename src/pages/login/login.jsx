@@ -19,7 +19,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 
 export const Login = () => {
 	const [serverError, setServerError] = useState(null);
-	const [loginUser, { isLoading }] = useLoginUserMutation();
+	const [loginUser, { isLoading, isError }] = useLoginUserMutation();
 	const navigate = useNavigate();
 
 	const {
@@ -45,10 +45,20 @@ export const Login = () => {
 			const {
 				data: { user },
 			} = await loginUser({ login, password });
+			if (!user) {
+				throw new Error('Пользователь не найден');
+			}
+
 			dispatch(setCredentials({ user }));
 			navigate('/');
 		} catch (error) {
-			setServerError(error.message || 'Произошла ошибка при авторизации');
+			if (isError) {
+				setServerError(
+					error?.response?.data?.message || 'Произошла ошибка при авторизации',
+				);
+			} else {
+				setServerError('Произошла неизвестная ошибка при авторизации');
+			}
 		}
 	};
 

@@ -8,7 +8,6 @@ import Avatar from '@mui/material/Avatar';
 
 export const ProfilePage = () => {
 	const user = useSelector(selectCurrentUser);
-	console.log(user);
 	return (
 		<Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 4 }}>
 			<Paper sx={{ padding: 4, maxWidth: 400 }}>

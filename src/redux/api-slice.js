@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 export const apiSlice = createApi({
 	reducerPath: 'api',
-	tagTypes: ['Users', 'Products'],
+	tagTypes: ['Users', 'Products', 'Cart_items'],
 	baseQuery: fetchBaseQuery({
 		baseUrl: '/',
 	}),
@@ -62,13 +62,16 @@ export const apiSlice = createApi({
 			invalidatesTags: [{ type: 'Users', id: 'LIST' }],
 		}),
 		getProducts: build.query({
-			query: ({ search = '', categories, page, limit }) => {
-				const queryParams = new URLSearchParams();
-				if (search) queryParams.append('search', search);
-				if (categories) queryParams.append('categories', categories);
-				if (page) queryParams.append('page', page);
-				if (limit) queryParams.append('limit', limit);
-				const queryString = queryParams.toString();
+			query: ({ search, categories, page, limit = 9 }) => {
+				const queryString = new URLSearchParams({
+					search: search || '',
+					categories:
+						categories.length > 0
+							? encodeURIComponent(JSON.stringify(categories))
+							: '',
+					page: page || '',
+					limit: limit || '',
+				}).toString();
 				return `api/products${queryString ? `?${queryString}` : ''}`;
 			},
 			providesTags: (result) => {
@@ -84,6 +87,16 @@ export const apiSlice = createApi({
 		}),
 		getProductById: build.query({
 			query: (productId = '') => `api/products/${productId && `${productId}`}`,
+			providesTags: (result) => {
+				if (Array.isArray(result)) {
+					return [
+						...result.map(({ id }) => ({ type: 'Products', id })),
+						{ type: 'Products', id: 'LIST' },
+					];
+				} else {
+					return [{ type: 'Products', id: 'LIST' }];
+				}
+			},
 		}),
 		deleteProductById: build.mutation({
 			query: (productId) => ({
@@ -108,6 +121,57 @@ export const apiSlice = createApi({
 			}),
 			invalidatesTags: [{ type: 'Products', id: 'LIST' }],
 		}),
+		getCartItems: build.query({
+			query: (cartId) => `api/carts/${cartId}`,
+			providesTags: (result) => {
+				if (Array.isArray(result)) {
+					return [
+						...result.map(({ id }) => ({ type: 'Cart_items', id })),
+						{ type: 'Cart_items', id: 'LIST' },
+					];
+				} else {
+					return [{ type: 'Cart_items', id: 'LIST' }];
+				}
+			},
+		}),
+		addProductToCart: build.mutation({
+			query: ({ cartId, dataProduct }) => ({
+				url: `api/carts/${cartId}`,
+				method: 'POST',
+				body: dataProduct,
+			}),
+			invalidatesTags: [{ type: 'Cart_items', id: 'LIST' }],
+		}),
+		deleteProductFromCart: build.mutation({
+			query: ({ cartId, productId }) => ({
+				url: `api/carts/${cartId}/products/${productId}`,
+				method: 'DELETE',
+			}),
+			invalidatesTags: [{ type: 'Cart_items', id: 'LIST' }],
+		}),
+		updateQuantityProductInCart: build.mutation({
+			query: ({ cartId, itemId, quantity }) => ({
+				url: `api/carts/${cartId}/cart_items/${itemId}`,
+				method: 'PATCH',
+				body: { quantity },
+			}),
+			invalidatesTags: [{ type: 'Cart_items', id: 'LIST' }],
+		}),
+		addComment: build.mutation({
+			query: ({ productId, content }) => ({
+				url: `api/products/${productId}/comments`,
+				method: 'POST',
+				body: { content },
+			}),
+			invalidatesTags: [{ type: 'Products', id: 'LIST' }],
+		}),
+		deleteComment: build.mutation({
+			query: ({ productId, commentId }) => ({
+				url: `/api/products/${productId}/comments/${commentId}`,
+				method: 'DELETE',
+			}),
+			invalidatesTags: [{ type: 'Products', id: 'LIST' }],
+		}),
 	}),
 });
 
@@ -125,4 +189,10 @@ export const {
 	useDeleteProductByIdMutation,
 	useUpdateProductMutation,
 	useAddProductMutation,
+	useGetCartItemsQuery,
+	useAddProductToCartMutation,
+	useDeleteProductFromCartMutation,
+	useUpdateQuantityProductInCartMutation,
+	useAddCommentMutation,
+	useDeleteCommentMutation,
 } = apiSlice;

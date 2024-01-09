@@ -18,12 +18,9 @@ export const Main = () => {
 	const checked = useSelector(selectCheckedCategories);
 	const [page, setPage] = useState(1);
 
-	const categoriesParam =
-		checked.length > 0 ? encodeURIComponent(JSON.stringify(checked)) : '';
-
 	const { data, isLoading, isError } = useGetProductsQuery({
 		search: search,
-		categories: categoriesParam,
+		categories: checked,
 		page: page,
 	});
 
@@ -38,6 +35,9 @@ export const Main = () => {
 	const products = data?.products || [];
 
 	const handleChange = ({ target }) => {
+		if (search) {
+			setPage(1);
+		}
 		setSearch(target.value);
 	};
 

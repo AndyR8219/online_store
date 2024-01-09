@@ -32,7 +32,7 @@ export const App = () => {
 				<Route path="/register" element={<Registration />} />
 				<Route path="/users" element={<Users />} />
 				<Route path="/profile" element={<ProfilePage />} />
-				<Route path="/cart" element={<CartPage />} />
+				<Route path="/cart/:id" element={<CartPage />} />
 				<Route path="/product" element={<NewProduct />} />
 				<Route path="/product/:id" element={<Product />} />
 				<Route path="/products_list" element={<ProductList />} />

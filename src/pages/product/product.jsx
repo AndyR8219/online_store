@@ -1,26 +1,58 @@
-import { useGetProductByIdQuery } from '../../redux';
+import { useState } from 'react';
+import { useAddCommentMutation, useGetProductByIdQuery } from '../../redux';
 import { useParams } from 'react-router-dom';
-import { Loading } from '../../components';
+import { Loading, Notification } from '../../components';
+import { selectCurrentUser } from '../../slice/auth-slice';
+import { useSelector } from 'react-redux';
+import { useAddProductToCart } from '../../hooks';
+import { Comment } from './components';
+import Alert from '@mui/material/Alert';
+import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-import Alert from '@mui/material/Alert';
+import TextField from '@mui/material/TextField';
 
 export const Product = () => {
 	const params = useParams();
+	const user = useSelector(selectCurrentUser);
+	const [notification, setNotification] = useState(null);
+	const [newComment, setNewComment] = useState('');
 	const { data, isLoading, isError } = useGetProductByIdQuery(params.id);
+	const handledProductToCart = useAddProductToCart();
+	const [addComment] = useAddCommentMutation();
 
 	if (isLoading) {
 		return <Loading />;
 	}
 
 	if (isError || !data || !data.data) {
-		return <Alert severity="error">Ошибка загрузки товаров</Alert>;
+		return <Alert severity="error">Ошибка загрузки товара</Alert>;
 	}
+	const { title, price, description, imageUrl, id: productId, comments } = data.data;
 
-	const { title, price, description, imageUrl } = data.data;
+	const handleCommentSubmit = async () => {
+		await addComment({ productId, content: newComment });
+
+		setNewComment('');
+	};
+
+	const handledToCart = () => {
+		try {
+			handledProductToCart(productId);
+			setNotification({
+				message: 'Товара добавлен в корзину!',
+				type: 'success',
+			});
+		} catch (error) {
+			console.error(error);
+			setNotification({
+				message: 'Возникла ошибка при добавлении товара в корзину!',
+				type: 'error',
+			});
+		}
+	};
 
 	return (
 		<>
@@ -54,10 +86,17 @@ export const Product = () => {
 					<Typography variant="subtitle1" color="textSecondary">
 						{'В наличии'}
 					</Typography>
-					<Button variant="contained" color="primary">
+					<Button variant="contained" color="primary" onClick={handledToCart}>
 						В корзину
 					</Button>
 				</CardContent>
+				{notification && (
+					<Notification
+						message={notification.message}
+						type={notification.type}
+						onClose={() => setNotification(null)}
+					/>
+				)}
 			</Card>
 
 			<Card style={{ margin: '16px' }}>
@@ -65,12 +104,32 @@ export const Product = () => {
 					<Typography variant="h6" gutterBottom>
 						Комментарии к товару
 					</Typography>
-					{/* Вставьте компоненты для отображения комментариев */}
-					<Typography variant="body1">
-						Здесь могут быть ваши комментарии к товару. Пример: "Отличный
-						товар!", "Быстрая доставка" и т.д.
-					</Typography>
+					{user && (
+						<>
+							<TextField
+								label="Добавить комментарий"
+								variant="outlined"
+								fullWidth
+								multiline
+								rows={4}
+								value={newComment}
+								onChange={(e) => setNewComment(e.target.value)}
+							/>
+
+							<Button
+								variant="contained"
+								color="primary"
+								style={{ marginTop: '16px' }}
+								onClick={handleCommentSubmit}
+							>
+								Отправить комментарий
+							</Button>
+						</>
+					)}
 				</CardContent>
+			</Card>
+			<Card style={{ margin: '16px' }}>
+				<Comment comments={comments} productId={productId} user={user} />
 			</Card>
 		</>
 	);

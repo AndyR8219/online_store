@@ -1,63 +1,75 @@
+import { CartListItem } from './components';
+import { useGetCartItemsQuery } from '../../redux/api-slice';
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { Loading } from '../../components';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
-import ListItemSecondaryAction from '@mui/material/ListItemSecondaryAction';
-import IconButton from '@mui/material/IconButton';
-import Divider from '@mui/material/Divider';
-import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 
 export const CartPage = () => {
-	// Предположим, у вас есть массив объектов с данными о покупках
-	const cartItems = [
-		{ id: 1, name: 'Product 1', price: 19.99, quantity: 2 },
-		{ id: 2, name: 'Product 2', price: 29.99, quantity: 1 },
-		// Добавьте другие элементы, если необходимо
-	];
+	const { id: cartId } = useParams();
+	const [cartItems, setCartItems] = useState([]);
+	const { data, isLoading } = useGetCartItemsQuery(cartId);
 
-	// Функция для удаления товара из корзины
-	const removeFromCart = (itemId) => {
-		// Ваша логика удаления товара из корзины
-		console.log(`Удалить товар с id ${itemId} из корзины`);
+	useEffect(() => {
+		if (!isLoading) {
+			setCartItems(data.data.cartItems);
+		}
+	}, [isLoading, data?.data?.cartItems]);
+
+	const calculateTotal = () => {
+		return cartItems
+			.reduce((total, item) => {
+				let itemQuantity = item.quantity;
+				if (item.product.quantity === 0) {
+					itemQuantity = 0;
+				}
+
+				return total + itemQuantity * item.product.price;
+			}, 0)
+			.toFixed(2);
 	};
 
 	return (
 		<Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 4 }}>
-			<Paper sx={{ padding: 4, width: 600 }}>
-				<Typography variant="h5" sx={{ textAlign: 'center', marginBottom: 2 }}>
+			<Paper sx={{ padding: 4, width: 1200 }}>
+				<Typography variant="h4" sx={{ textAlign: 'center', mb: 8 }}>
 					Корзина
 				</Typography>
-				<List>
-					{cartItems.map((item) => (
-						<Box key={item.id}>
-							<ListItem>
-								<ListItemText
-									primary={item.name}
-									secondary={`Цена: $${item.price.toFixed(2)}`}
-								/>
-								<ListItemSecondaryAction>
-									<IconButton
-										edge="end"
-										aria-label="delete"
-										onClick={() => removeFromCart(item.id)}
-									>
-										<HighlightOffIcon />
-									</IconButton>
-								</ListItemSecondaryAction>
-							</ListItem>
-							<Divider />
-						</Box>
-					))}
-				</List>
-				{cartItems.length === 0 && (
-					<Typography
-						variant="body1"
-						sx={{ textAlign: 'center', marginTop: 2 }}
-					>
-						Корзина пуста. Выберите товары для покупки.
-					</Typography>
+				{isLoading ? (
+					<Loading />
+				) : (
+					<>
+						<List>
+							{cartItems.map((item, i) => (
+								<Box key={i}>
+									<CartListItem item={item} cartId={cartId} />
+								</Box>
+							))}
+						</List>
+						{cartItems.length === 0 && (
+							<Typography
+								variant="body1"
+								sx={{ textAlign: 'center', marginTop: 2 }}
+							>
+								Корзина пуста. Выберите товары для покупки.
+							</Typography>
+						)}
+						{cartItems.length > 0 && (
+							<Typography
+								variant="h6"
+								sx={{ textAlign: 'right', marginTop: 2 }}
+							>
+								Итог: ${calculateTotal()}
+							</Typography>
+						)}
+						<Button variant="contained" sx={{ mb: 2 }}>
+							Оформить заказ
+						</Button>
+					</>
 				)}
 			</Paper>
 		</Box>
