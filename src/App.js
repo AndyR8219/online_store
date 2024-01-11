@@ -16,7 +16,6 @@ import {
 import styled from 'styled-components';
 
 const AppColumn = styled.div`
-	max-width: 1600px;
 	min-height: 100%;
 	background-color: #fff;
 	margin: 0 auto;
