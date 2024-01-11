@@ -59,16 +59,19 @@ export const CartPage = () => {
 							</Typography>
 						)}
 						{cartItems.length > 0 && (
-							<Typography
-								variant="h6"
-								sx={{ textAlign: 'right', marginTop: 2 }}
-							>
-								Итог: ${calculateTotal()}
-							</Typography>
+							<>
+								<Typography
+									variant="h6"
+									sx={{ textAlign: 'right', marginTop: 2 }}
+								>
+									Итог: ${calculateTotal()}
+								</Typography>
+
+								<Button variant="contained" sx={{ mb: 2 }}>
+									Оформить заказ
+								</Button>
+							</>
 						)}
-						<Button variant="contained" sx={{ mb: 2 }}>
-							Оформить заказ
-						</Button>
 					</>
 				)}
 			</Paper>

@@ -1,4 +1,4 @@
-export const validateForm = (errors, setErrors, product) => {
+export const validateFormProduct = (errors, setErrors, product) => {
 	let isValid = true;
 	const newErrors = { ...errors };
 

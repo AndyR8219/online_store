@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLoginUserMutation } from '../../redux';
 import { useNavigate } from 'react-router-dom';
 import { setCredentials } from '../../slice/auth-slice';
@@ -19,9 +19,8 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 
 export const Login = () => {
 	const [serverError, setServerError] = useState(null);
-	const [loginUser, { isLoading, isError }] = useLoginUserMutation();
+	const [loginUser, { isLoading }] = useLoginUserMutation();
 	const navigate = useNavigate();
-
 	const {
 		register,
 		handleSubmit,
@@ -36,32 +35,22 @@ export const Login = () => {
 
 	const dispatch = useDispatch();
 
-	const handleRegister = () => {
-		navigate('/register');
-	};
-
 	const onSubmit = async ({ login, password }) => {
-		try {
-			const {
-				data: { user },
-			} = await loginUser({ login, password });
-			if (!user) {
-				throw new Error('Пользователь не найден');
-			}
-
-			dispatch(setCredentials({ user }));
+		const data = await loginUser({ login, password });
+		if (data?.data?.user) {
+			dispatch(setCredentials({ user: data?.data?.user }));
 			navigate('/');
-		} catch (error) {
-			if (isError) {
-				setServerError(
-					error?.response?.data?.message || 'Произошла ошибка при авторизации',
-				);
-			} else {
-				setServerError('Произошла неизвестная ошибка при авторизации');
-			}
+		} else if (data?.error) {
+			setServerError(
+				data?.error?.data?.error ||
+					'Произошла неизвестная ошибка при авторизации',
+			);
 		}
 	};
 
+	const handleRegister = () => {
+		navigate('/register');
+	};
 	return (
 		<>
 			<Container component="main" maxWidth="xs">

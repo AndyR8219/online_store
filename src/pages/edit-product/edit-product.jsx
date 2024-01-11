@@ -2,10 +2,11 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useGetProductByIdQuery, useUpdateProductMutation } from '../../redux';
 import { ErrorHandling, Loading, Notification } from '../../components';
-import { userHasRequiredRole, validateForm } from '../../utils';
+import { userHasRequiredRole } from '../../utils';
 import { ROLE } from '../../constants';
 import { useSelector } from 'react-redux';
 import { selectCurrentUser } from '../../slice/auth-slice';
+import { validateFormProduct } from '../../validations';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
@@ -89,7 +90,7 @@ export const EditProduct = () => {
 	};
 
 	const handleSave = async () => {
-		if (!validateForm(errors, setErrors, product)) {
+		if (!validateFormProduct(errors, setErrors, product)) {
 			return;
 		}
 
@@ -211,7 +212,7 @@ export const EditProduct = () => {
 							sx={{ ml: 2 }}
 							disabled={isUpdateLoading}
 						>
-							Отмена
+							Назад
 						</Button>
 					</Grid>
 				</Grid>

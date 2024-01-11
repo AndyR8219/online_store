@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux';
 import { selectCurrentUser } from '../../slice/auth-slice';
 import { ROLE } from '../../constants';
+import { formatDate } from '../../utils';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
@@ -26,10 +27,7 @@ export const ProfilePage = () => {
 					{`${user?.login}@freemail.com`}
 				</Typography>
 				<Typography variant="body1" sx={{ marginTop: 2 }}>
-					Дополнительная информация о пользователе.
-				</Typography>
-				<Typography variant="body1" sx={{ marginTop: 2 }}>
-					{`Зарегестрирован ${user?.createdAt}`}
+					{`Зарегестрирован ${formatDate(user?.createdAt)}`}
 				</Typography>
 				<Typography variant="body1" sx={{ marginTop: 2 }}>
 					{`Текущая роль ${Object.keys(ROLE).find(

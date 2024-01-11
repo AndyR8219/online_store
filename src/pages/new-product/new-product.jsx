@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { userHasRequiredRole, validateForm } from '../../utils';
+import { userHasRequiredRole } from '../../utils';
 import { ROLE } from '../../constants';
 import { useSelector } from 'react-redux';
 import { selectCurrentUser } from '../../slice/auth-slice';
 import { ErrorHandling, Notification } from '../../components';
 import { useAddProductMutation } from '../../redux';
+import { validateFormProduct } from '../../validations';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
@@ -62,7 +63,7 @@ export const NewProduct = () => {
 	};
 
 	const handleSave = async () => {
-		if (!validateForm(errors, setErrors, product)) {
+		if (!validateFormProduct(errors, setErrors, product)) {
 			return;
 		}
 		try {
@@ -183,7 +184,7 @@ export const NewProduct = () => {
 							onClick={() => navigate(-1)}
 							sx={{ ml: 2 }}
 						>
-							Отмена
+							Назад
 						</Button>
 					</Grid>
 				</Grid>

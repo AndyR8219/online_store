@@ -16,27 +16,11 @@ export const ProductItem = (props) => {
 	const handledProductToCart = useAddProductToCart();
 	const { imageUrl, price, title, id } = props.product;
 
-	const handledToCart = () => {
-		try {
-			handledProductToCart(id);
-			setNotification({
-				message: 'Товара добавлен в корзину!',
-				type: 'success',
-			});
-		} catch (error) {
-			console.error(error);
-			setNotification({
-				message: 'Возникла ошибка при добавлении товара в корзину!',
-				type: 'error',
-			});
-		}
-	};
-
 	return (
 		<Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
 			<CardActionArea onClick={() => navigate(`/product/${id}`)}>
 				<CardMedia
-					sx={{ maxWidth: 345, height: 300 }}
+					sx={{ width: 345, height: 300 }}
 					image={imageUrl}
 					component="img"
 					alt={title}
@@ -52,7 +36,11 @@ export const ProductItem = (props) => {
 				</CardContent>
 			</CardActionArea>
 			<CardActions>
-				<Button size="small" color="primary" onClick={handledToCart}>
+				<Button
+					size="small"
+					color="primary"
+					onClick={() => handledProductToCart(setNotification, id)}
+				>
 					В корзину
 				</Button>
 			</CardActions>

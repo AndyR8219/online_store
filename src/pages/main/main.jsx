@@ -12,6 +12,7 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
 
 export const Main = () => {
 	const [search, setSearch] = useState('');
@@ -30,9 +31,7 @@ export const Main = () => {
 		return <Alert severity="error">Произошла ошибка при загрузке данных!</Alert>;
 	}
 
-	const lastPage = data?.lastPage || 1;
-	const categories = data?.categories || [];
-	const products = data?.products || [];
+	const { lastPage = 1, categories = [], products = [] } = data || {};
 
 	const handleChange = ({ target }) => {
 		if (search) {
@@ -46,11 +45,19 @@ export const Main = () => {
 	};
 
 	return (
-		<Container sx={{ mt: '1rem', width: '100%' }}>
+		<Container
+			sx={{
+				mt: '1rem',
+				width: '100%',
+				display: 'flex',
+				flexDirection: 'column',
+				alignItems: 'center',
+			}}
+		>
 			<Search value={search} onChange={handleChange} />
 			<Grid container spacing={2} wrap="nowrap">
-				<Grid item sx={{ width: '200px' }}>
-					<Card sx={{ width: '100%', height: '100%' }}>
+				<Grid item>
+					<Card sx={{ width: '180px', height: '100%' }}>
 						<Category
 							categories={categories}
 							checked={checked}
@@ -59,26 +66,29 @@ export const Main = () => {
 					</Card>
 				</Grid>
 				<Grid item xs={10}>
-					<Box>
-						<Grid container spacing={3}>
-							{isLoading
-								? 'Загрузка'
-								: products.map((product) => (
-										<Grid
-											item
-											key={product.id}
-											xs={12}
-											sm={6}
-											md={5}
-											lg={4}
-										>
-											<ProductItem product={product} />
-										</Grid>
-								  ))}
-						</Grid>
-					</Box>
+					<Grid container spacing={3}>
+						{isLoading
+							? 'Загрузка'
+							: products.map((product) => (
+									<Grid
+										item
+										key={product.id}
+										xs={12}
+										sm={6}
+										md={5}
+										lg={4}
+									>
+										<ProductItem product={product} />
+									</Grid>
+							  ))}
+					</Grid>
 				</Grid>
 			</Grid>
+			{products.length === 0 && (
+				<Typography variant="h6" sx={{ textAlign: 'center', marginTop: 2 }}>
+					Товар отсутствуетв списке
+				</Typography>
+			)}
 			<Box sx={{ padding: '3rem', display: 'flex', justifyContent: 'center' }}>
 				<Stack spacing={2}>
 					<Pagination

@@ -24,16 +24,13 @@ export const ProductList = () => {
 	const [page, setPage] = useState(1);
 	const navigate = useNavigate();
 
-	const categoriesParam =
-		checked.length > 0 ? encodeURIComponent(JSON.stringify(checked)) : '';
-
 	const {
 		data,
 		isLoading,
 		error: dataError,
 	} = useGetProductsQuery({
 		search: search,
-		categories: categoriesParam,
+		categories: checked,
 		page: page,
 		limit: LIMIT_PRODUCT_LIST,
 	});

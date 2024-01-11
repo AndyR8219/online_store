@@ -36,14 +36,15 @@ export const Registration = () => {
 	});
 
 	const onSubmit = async ({ login, password }) => {
-		try {
-			const {
-				data: { user },
-			} = await registerUser({ login, password });
-			dispatch(setCredentials({ user }));
+		const data = await registerUser({ login, password });
+		if (data?.data?.user) {
+			dispatch(setCredentials({ user: data?.data?.user }));
 			navigate('/');
-		} catch (error) {
-			setServerError(error.message || 'Произошла ошибка при регистрации');
+		} else if (data?.error) {
+			setServerError(
+				data?.error?.data?.error ||
+					'Произошла неизвестная ошибка при регистрации',
+			);
 		}
 	};
 

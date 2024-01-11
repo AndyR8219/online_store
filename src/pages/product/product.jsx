@@ -38,22 +38,6 @@ export const Product = () => {
 		setNewComment('');
 	};
 
-	const handledToCart = () => {
-		try {
-			handledProductToCart(productId);
-			setNotification({
-				message: 'Товара добавлен в корзину!',
-				type: 'success',
-			});
-		} catch (error) {
-			console.error(error);
-			setNotification({
-				message: 'Возникла ошибка при добавлении товара в корзину!',
-				type: 'error',
-			});
-		}
-	};
-
 	return (
 		<>
 			<Card style={{ display: 'flex', margin: '16px' }}>
@@ -86,7 +70,11 @@ export const Product = () => {
 					<Typography variant="subtitle1" color="textSecondary">
 						{'В наличии'}
 					</Typography>
-					<Button variant="contained" color="primary" onClick={handledToCart}>
+					<Button
+						variant="contained"
+						color="primary"
+						onClick={() => handledProductToCart(setNotification, productId)}
+					>
 						В корзину
 					</Button>
 				</CardContent>
